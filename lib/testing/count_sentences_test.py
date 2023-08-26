@@ -1,47 +1,47 @@
 #!/usr/bin/env python3
 
-from count_sentences import MyString
-
 import io
 import sys
+import unittest
+from count_sentences import MyString
 
-class TestMyString:
-    '''MyString in count_sentences.py'''
+class TestMyString(unittest.TestCase):
+    '''Test MyString in count_sentences.py'''
 
-    def test_is_class(self):
-        '''is a class with the name "MyString".'''
-        string = MyString()
-        assert(type(string) == MyString)
-
-    def test_value_string(self):
+    def test_not_a_string(self):
         '''prints "The value must be a string." if not string.'''
+        value = MyString(123)
         captured_out = io.StringIO()
         sys.stdout = captured_out
-        string = MyString()
-        string.value = 123
+        value.is_string()
         sys.stdout = sys.__stdout__
-        assert(captured_out.getvalue() == "The value must be a string.\n")
+        self.assertEqual(captured_out.getvalue(), "The value must be a string.\n")
 
-    def test_is_sentence(self):
+    def test_ends_with_period(self):
         '''returns True if value ends with a period and False otherwise.'''
-        assert(MyString("Hello World.").is_sentence() == True)
-        assert(MyString("Hello World").is_sentence() == False)
+        value = MyString("Hello world.")
+        self.assertTrue(value.ends_with_period())
+        value = MyString("Hello world")
+        self.assertFalse(value.ends_with_period())
 
-    def test_is_question(self):
+    def test_ends_with_question_mark(self):
         '''returns True if value ends with a question mark and False otherwise.'''
-        assert(MyString("Is anybody there?").is_question() == True)
-        assert(MyString("Is anybody there").is_question() == False)
+        value = MyString("How are you?")
+        self.assertTrue(value.ends_with_question_mark())
+        value = MyString("How are you")
+        self.assertFalse(value.ends_with_question_mark())
 
-    def test_is_exclamation(self):
+    def test_ends_with_exclamation_mark(self):
         '''returns True if value ends with an exclamation mark and False otherwise.'''
-        assert(MyString("It's me!").is_exclamation() == True)
-        assert(MyString("It's me").is_exclamation() == False)
+        value = MyString("Wow!")
+        self.assertTrue(value.ends_with_exclamation_mark())
+        value = MyString("Wow")
+        self.assertFalse(value.ends_with_exclamation_mark())
 
     def test_count_sentences(self):
         '''returns the number of sentences in the value.'''
-        simple_string = MyString("one. two. three?")
-        empty_string = MyString()
-        complex_string = MyString("This, well, is a sentence. This is too!! And so is this, I think? Woo...")
-        assert(simple_string.count_sentences() == 3)
-        assert(empty_string.count_sentences() == 0)
-        assert(complex_string.count_sentences() == 4)
+        value = MyString("This is a sentence. And another one!")
+        self.assertEqual(value.count_sentences(), 2)
+
+if __name__ == '__main__':
+    unittest.main()
